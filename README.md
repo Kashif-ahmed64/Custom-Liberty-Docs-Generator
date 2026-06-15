@@ -1,36 +1,35 @@
-# Liberty Invigilator Pass Generator
+# Liberty Pass Generator
 
-Web tool for generating printable invigilator lanyard passes for the **Trade Apprentice Test** at Liberty Daharki Powers Limited.
+Reusable web tool for generating printable lanyard passes for **Liberty Daharki Powers Limited** events (Invigilator, Trade Apprentice Test, and more).
 
 ## Features
 
-- Editable invigilator name and test date
-- Liberty logo (with custom logo upload)
-- 6 theme templates (Liberty Red, Deep Maroon, Navy, Forest Green, Classic Black, White Minimal)
-- Print-ready output (white theme, ink-friendly)
-- Download as PNG (print-ready or themed)
-- Standard lanyard pass size: **90mm × 140mm**
+- **All fields live-editable** — text updates on the card as you type
+- **Default Invigilator template** — logo, company name, role tag, name, date
+- **Add custom blocks** — Text Field, Logo Field, or Tag Box (multi-line badge)
+- **Formatting per field** — size, weight, color, alignment, uppercase, letter spacing, optional label
+- **Reorder & remove** fields with ↑ ↓ ✕ controls
+- **6 theme templates** + custom logo upload per logo field
+- **Print-ready white output** — logo stays visible
+- **Download PNG** (print-ready or themed)
+- **Standard size:** 90mm × 140mm
 
-## Usage
+## Default Template
 
-1. Open the site
-2. Enter the invigilator name
-3. Confirm the test date (default: 17 June 2026)
-4. Optionally pick a theme or upload a custom logo
-5. Click **Print Pass** or **Download PNG**
+| Zone | Content |
+|------|---------|
+| Header | Liberty logo + Liberty Daharki Powers Limited |
+| Body | INVIGILATOR / Trade Apprentice Test tag + Name |
+| Footer | Test Date + 17 June 2026 |
 
-> **Note:** Print and "Print Ready" download automatically switch to a white theme. The logo remains visible.
+Change any text for other events. Use **Reset Template** to restore defaults.
 
 ## Deploy on Vercel
 
-1. Push this repo to GitHub
-2. Go to [vercel.com](https://vercel.com) → **Add New Project**
-3. Import the GitHub repository
-4. Deploy (no build step required — static HTML)
+1. Import `Kashif-ahmed64/liberty-invigilator-pass` on [vercel.com](https://vercel.com)
+2. Deploy (static site, no build step)
 
 ## Local Preview
-
-Open `index.html` in a browser, or run:
 
 ```bash
 npx serve .
