@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liberty Invigilator Pass Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --theme-primary: #e60000;
+      --theme-primary-dark: #b80000;
+      --theme-accent: #ffffff;
+      --theme-text: #ffffff;
+      --theme-text-muted: rgba(255, 255, 255, 0.85);
+      --theme-body-bg: #f4f4f5;
+      --theme-tag-bg: rgba(255, 255, 255, 0.15);
+      --theme-border: rgba(255, 255, 255, 0.3);
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #e8e8ea;
+      color: #18181b;
+      min-height: 100vh;
+    }
+
+    .app {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+
+    .app-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .app-header h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #18181b;
+    }
+
+    .app-header p {
+      color: #71717a;
+      margin-top: 6px;
+      font-size: 0.95rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 32px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+
+    /* Preview area */
+    .preview-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .preview-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #71717a;
+    }
+
+    .preview-wrap {
+      background: #fff;
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      display: flex;
+      justify-content: center;
+    }
+
+    .size-note {
+      font-size: 0.8rem;
+      color: #a1a1aa;
+      text-align: center;
+    }
+
+    /* ===== PASS CARD ===== */
+    .pass-card {
+      width: 90mm;
+      height: 140mm;
+      background: var(--theme-primary);
+      border-radius: 4mm;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .pass-card::before {
+      content: '';
+      position: absolute;
+      inset: 3mm;
+      border: 0.6mm solid var(--theme-border);
+      border-radius: 2mm;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .pass-header {
+      background: var(--theme-primary);
+      padding: 6mm 5mm 4mm;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .pass-logo-wrap {
+      width: 22mm;
+      height: 22mm;
+      margin: 0 auto 3mm;
+      border-radius: 2mm;
+      overflow: hidden;
+      background: #e60000;
+      flex-shrink: 0;
+    }
+
+    .pass-logo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .pass-company {
+      font-size: 3.2mm;
+      font-weight: 700;
+      color: var(--theme-text);
+      line-height: 1.35;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .pass-body {
+      flex: 1;
+      background: var(--theme-body-bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 5mm 6mm;
+      gap: 4mm;
+      position: relative;
+      z-index: 2;
+    }
+
+    .pass-tag {
+      background: var(--theme-tag-bg);
+      border: 0.4mm solid var(--theme-border);
+      border-radius: 2mm;
+      padding: 2.5mm 5mm;
+      text-align: center;
+      width: 100%;
+    }
+
+    .pass-tag-role {
+      font-size: 5.5mm;
+      font-weight: 800;
+      color: var(--theme-primary);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    .pass-tag-sub {
+      font-size: 3mm;
+      font-weight: 600;
+      color: #52525b;
+      margin-top: 1mm;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .pass-name-block {
+      text-align: center;
+      width: 100%;
+      margin-top: 2mm;
+    }
+
+    .pass-name-label {
+      font-size: 2.6mm;
+      font-weight: 600;
+      color: #71717a;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1.5mm;
+    }
+
+    .pass-name {
+      font-size: 6mm;
+      font-weight: 800;
+      color: #18181b;
+      line-height: 1.25;
+      word-break: break-word;
+      min-height: 8mm;
+    }
+
+    .pass-footer {
+      background: var(--theme-primary-dark);
+      padding: 4mm 5mm;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .pass-date-label {
+      font-size: 2.4mm;
+      font-weight: 600;
+      color: var(--theme-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .pass-date {
+      font-size: 4.5mm;
+      font-weight: 700;
+      color: var(--theme-text);
+      margin-top: 1mm;
+    }
+
+    .pass-hole {
+      position: absolute;
+      top: 2mm;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 5mm;
+      height: 5mm;
+      border-radius: 50%;
+      background: #e8e8ea;
+      border: 0.4mm solid rgba(0, 0, 0, 0.15);
+      z-index: 3;
+    }
+
+    /* ===== CONTROLS PANEL ===== */
+    .controls {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .controls h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #18181b;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e4e4e7;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #52525b;
+      margin-bottom: 6px;
+    }
+
+    .field input[type="text"],
+    .field input[type="date"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #d4d4d8;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: border-color 0.15s;
+    }
+
+    .field input:focus {
+      outline: none;
+      border-color: #e60000;
+    }
+
+    .theme-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .theme-btn {
+      padding: 10px 8px;
+      border: 2px solid #e4e4e7;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-family: inherit;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      color: #3f3f46;
+    }
+
+    .theme-btn:hover { border-color: #a1a1aa; }
+
+    .theme-btn.active {
+      border-color: #e60000;
+      background: #fff5f5;
+    }
+
+    .theme-swatch {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .logo-upload-area {
+      border: 2px dashed #d4d4d8;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+
+    .logo-upload-area:hover { border-color: #e60000; }
+
+    .logo-upload-area input { display: none; }
+
+    .logo-upload-area p {
+      font-size: 0.85rem;
+      color: #71717a;
+    }
+
+    .logo-upload-area span {
+      color: #e60000;
+      font-weight: 600;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 12px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background: #e60000;
+      color: #fff;
+    }
+
+    .btn-primary:hover { opacity: 0.9; }
+
+    .btn-secondary {
+      background: #18181b;
+      color: #fff;
+    }
+
+    .btn-secondary:hover { opacity: 0.9; }
+
+    .btn-outline {
+      background: #fff;
+      color: #18181b;
+      border: 1.5px solid #d4d4d8;
+    }
+
+    .btn-outline:hover { background: #f4f4f5; }
+
+    .hint {
+      font-size: 0.78rem;
+      color: #a1a1aa;
+      line-height: 1.5;
+    }
+
+    /* ===== PRINT STYLES ===== */
+    @media print {
+      @page {
+        size: 90mm 140mm;
+        margin: 0;
+      }
+
+      body {
+        background: white !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .app-header,
+      .controls,
+      .preview-label,
+      .size-note,
+      .preview-wrap {
+        display: none !important;
+      }
+
+      .app {
+        padding: 0;
+        max-width: none;
+      }
+
+      .layout {
+        display: block;
+      }
+
+      .preview-section {
+        display: block;
+      }
+
+      .preview-wrap-print {
+        padding: 0 !important;
+        box-shadow: none !important;
+        background: white !important;
+      }
+
+      .pass-card {
+        box-shadow: none !important;
+        margin: 0 auto;
+        page-break-inside: avoid;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+
+        /* Print = white theme */
+        --theme-primary: #ffffff !important;
+        --theme-primary-dark: #ffffff !important;
+        --theme-accent: #18181b !important;
+        --theme-text: #18181b !important;
+        --theme-text-muted: #52525b !important;
+        --theme-body-bg: #ffffff !important;
+        --theme-tag-bg: #f4f4f5 !important;
+        --theme-border: #18181b !important;
+
+        background: #ffffff !important;
+        border: 0.5mm solid #18181b !important;
+      }
+
+      .pass-card::before {
+        border-color: #d4d4d8 !important;
+      }
+
+      .pass-header {
+        background: #ffffff !important;
+        border-bottom: 0.5mm solid #18181b !important;
+      }
+
+      .pass-logo-wrap {
+        background: transparent !important;
+        border: 0.3mm solid #d4d4d8;
+      }
+
+      .pass-tag-role {
+        color: #18181b !important;
+      }
+
+      .pass-footer {
+        background: #ffffff !important;
+        border-top: 0.5mm solid #18181b !important;
+      }
+
+      .pass-hole {
+        background: white !important;
+        border-color: #18181b !important;
+      }
+    }
+
+    /* Hidden print-only container */
+    #print-area { display: none; }
+
+    @media print {
+      #print-area { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <h1>Liberty Invigilator Pass Generator</h1>
+      <p>Enter invigilator details, choose a theme, then print or download the pass.</p>
+    </header>
+
+    <div class="layout">
+      <!-- Card Preview -->
+      <section class="preview-section">
+        <span class="preview-label">Live Preview</span>
+        <div class="preview-wrap">
+          <div class="pass-card" id="passCard">
+            <div class="pass-hole"></div>
+            <div class="pass-header">
+              <div class="pass-logo-wrap">
+                <img class="pass-logo" id="passLogo" src="assets/liberty-logo.jpeg" alt="Liberty Logo">
+              </div>
+              <div class="pass-company">Liberty Daharki Powers Limited</div>
+            </div>
+            <div class="pass-body">
+              <div class="pass-tag">
+                <div class="pass-tag-role">Invigilator</div>
+                <div class="pass-tag-sub">Trade Apprentice Test</div>
+              </div>
+              <div class="pass-name-block">
+                <div class="pass-name-label">Name</div>
+                <div class="pass-name" id="displayName">Enter Name Here</div>
+              </div>
+            </div>
+            <div class="pass-footer">
+              <div class="pass-date-label">Test Date</div>
+              <div class="pass-date" id="displayDate">17 June 2026</div>
+            </div>
+          </div>
+        </div>
+        <p class="size-note">Standard lanyard pass size: 90mm × 140mm (3.5″ × 5.5″)</p>
+      </section>
+
+      <!-- Controls -->
+      <aside class="controls">
+        <h2>Pass Details</h2>
+
+        <div class="field">
+          <label for="invigilatorName">Invigilator Name</label>
+          <input type="text" id="invigilatorName" placeholder="e.g. Muhammad Ali Khan" value="">
+        </div>
+
+        <div class="field">
+          <label for="testDate">Test Date</label>
+          <input type="date" id="testDate" value="2026-06-17">
+        </div>
+
+        <h2>Logo</h2>
+        <label class="logo-upload-area" for="logoUpload">
+          <input type="file" id="logoUpload" accept="image/*">
+          <p><span>Click to upload</span> a custom logo<br>PNG, JPG — replaces default Liberty logo</p>
+        </label>
+
+        <h2>Theme Template</h2>
+        <div class="theme-grid" id="themeGrid">
+          <button class="theme-btn active" data-theme="liberty-red">
+            <span class="theme-swatch" style="background:#e60000"></span>
+            Liberty Red
+          </button>
+          <button class="theme-btn" data-theme="deep-maroon">
+            <span class="theme-swatch" style="background:#7f1d1d"></span>
+            Deep Maroon
+          </button>
+          <button class="theme-btn" data-theme="navy">
+            <span class="theme-swatch" style="background:#1e3a5f"></span>
+            Navy Blue
+          </button>
+          <button class="theme-btn" data-theme="forest">
+            <span class="theme-swatch" style="background:#14532d"></span>
+            Forest Green
+          </button>
+          <button class="theme-btn" data-theme="classic-black">
+            <span class="theme-swatch" style="background:#18181b"></span>
+            Classic Black
+          </button>
+          <button class="theme-btn" data-theme="white-minimal">
+            <span class="theme-swatch" style="background:#fff;border:1px solid #ccc"></span>
+            White Minimal
+          </button>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" id="btnPrint">🖨️ Print Pass</button>
+          <button class="btn btn-secondary" id="btnDownload">⬇️ Download PNG (Print Ready)</button>
+          <button class="btn btn-outline" id="btnDownloadThemed">⬇️ Download PNG (Themed)</button>
+        </div>
+
+        <p class="hint">Print and "Print Ready" download use a white theme for ink-friendly output. The logo stays visible. Use themed download for digital sharing.</p>
+      </aside>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    const themes = {
+      'liberty-red': {
+        '--theme-primary': '#e60000',
+        '--theme-primary-dark': '#b80000',
+        '--theme-accent': '#ffffff',
+        '--theme-text': '#ffffff',
+        '--theme-text-muted': 'rgba(255,255,255,0.85)',
+        '--theme-body-bg': '#f4f4f5',
+        '--theme-tag-bg': 'rgba(255,255,255,0.15)',
+        '--theme-border': 'rgba(255,255,255,0.3)',
+        tagRoleColor: '#e60000'
+      },
+      'deep-maroon': {
+        '--theme-primary': '#7f1d1d',
+        '--theme-primary-dark': '#5c1212',
+        '--theme-accent': '#ffffff',
+        '--theme-text': '#ffffff',
+        '--theme-text-muted': 'rgba(255,255,255,0.85)',
+        '--theme-body-bg': '#fef2f2',
+        '--theme-tag-bg': 'rgba(255,255,255,0.12)',
+        '--theme-border': 'rgba(255,255,255,0.25)',
+        tagRoleColor: '#7f1d1d'
+      },
+      'navy': {
+        '--theme-primary': '#1e3a5f',
+        '--theme-primary-dark': '#152a45',
+        '--theme-accent': '#ffffff',
+        '--theme-text': '#ffffff',
+        '--theme-text-muted': 'rgba(255,255,255,0.85)',
+        '--theme-body-bg': '#f0f4f8',
+        '--theme-tag-bg': 'rgba(255,255,255,0.12)',
+        '--theme-border': 'rgba(255,255,255,0.25)',
+        tagRoleColor: '#1e3a5f'
+      },
+      'forest': {
+        '--theme-primary': '#14532d',
+        '--theme-primary-dark': '#0d3320',
+        '--theme-accent': '#ffffff',
+        '--theme-text': '#ffffff',
+        '--theme-text-muted': 'rgba(255,255,255,0.85)',
+        '--theme-body-bg': '#f0fdf4',
+        '--theme-tag-bg': 'rgba(255,255,255,0.12)',
+        '--theme-border': 'rgba(255,255,255,0.25)',
+        tagRoleColor: '#14532d'
+      },
+      'classic-black': {
+        '--theme-primary': '#18181b',
+        '--theme-primary-dark': '#09090b',
+        '--theme-accent': '#ffffff',
+        '--theme-text': '#ffffff',
+        '--theme-text-muted': 'rgba(255,255,255,0.8)',
+        '--theme-body-bg': '#f4f4f5',
+        '--theme-tag-bg': 'rgba(255,255,255,0.1)',
+        '--theme-border': 'rgba(255,255,255,0.2)',
+        tagRoleColor: '#18181b'
+      },
+      'white-minimal': {
+        '--theme-primary': '#ffffff',
+        '--theme-primary-dark': '#f4f4f5',
+        '--theme-accent': '#18181b',
+        '--theme-text': '#18181b',
+        '--theme-text-muted': '#52525b',
+        '--theme-body-bg': '#ffffff',
+        '--theme-tag-bg': '#f4f4f5',
+        '--theme-border': '#18181b',
+        tagRoleColor: '#18181b'
+      }
+    };
+
+    const passCard = document.getElementById('passCard');
+    const passLogo = document.getElementById('passLogo');
+    const displayName = document.getElementById('displayName');
+    const displayDate = document.getElementById('displayDate');
+    const nameInput = document.getElementById('invigilatorName');
+    const dateInput = document.getElementById('testDate');
+    const logoUpload = document.getElementById('logoUpload');
+    const tagRole = document.querySelector('.pass-tag-role');
+
+    let currentTheme = 'liberty-red';
+
+    function formatDate(dateStr) {
+      const d = new Date(dateStr + 'T00:00:00');
+      return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    function applyTheme(themeId) {
+      currentTheme = themeId;
+      const t = themes[themeId];
+      Object.entries(t).forEach(([key, val]) => {
+        if (key.startsWith('--')) {
+          passCard.style.setProperty(key, val);
+        }
+      });
+      tagRole.style.color = t.tagRoleColor;
+
+      document.querySelectorAll('.theme-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.theme === themeId);
+      });
+    }
+
+    nameInput.addEventListener('input', () => {
+      displayName.textContent = nameInput.value.trim() || 'Enter Name Here';
+    });
+
+    dateInput.addEventListener('change', () => {
+      displayDate.textContent = formatDate(dateInput.value);
+    });
+
+    logoUpload.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        passLogo.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById('themeGrid').addEventListener('click', (e) => {
+      const btn = e.target.closest('.theme-btn');
+      if (btn) applyTheme(btn.dataset.theme);
+    });
+
+    document.getElementById('btnPrint').addEventListener('click', () => {
+      if (!nameInput.value.trim()) {
+        alert('Please enter the invigilator name before printing.');
+        nameInput.focus();
+        return;
+      }
+      window.print();
+    });
+
+    const printThemeVars = {
+      '--theme-primary': '#ffffff',
+      '--theme-primary-dark': '#ffffff',
+      '--theme-text': '#18181b',
+      '--theme-text-muted': '#52525b',
+      '--theme-body-bg': '#ffffff',
+      '--theme-tag-bg': '#f4f4f5',
+      '--theme-border': '#18181b'
+    };
+
+    function applyPrintTheme(card) {
+      Object.entries(printThemeVars).forEach(([k, v]) => card.style.setProperty(k, v));
+      card.style.background = '#ffffff';
+      card.style.border = '2px solid #18181b';
+      tagRole.style.color = '#18181b';
+    }
+
+    function restoreTheme(card) {
+      applyTheme(currentTheme);
+      card.style.background = '';
+      card.style.border = '';
+    }
+
+    async function downloadCard(printReady) {
+      if (!nameInput.value.trim()) {
+        alert('Please enter the invigilator name before downloading.');
+        nameInput.focus();
+        return;
+      }
+
+      const card = passCard;
+      const savedStyles = {};
+
+      if (printReady) {
+        Object.keys(printThemeVars).forEach(k => savedStyles[k] = card.style.getPropertyValue(k));
+        applyPrintTheme(card);
+      }
+
+      try {
+        const canvas = await html2canvas(card, {
+          scale: 3,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: printReady ? '#ffffff' : null,
+          logging: false
+        });
+
+        const link = document.createElement('a');
+        const name = nameInput.value.trim().replace(/\s+/g, '-');
+        link.download = `invigilator-pass-${name}${printReady ? '-print' : ''}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      } catch (err) {
+        alert('Download failed. Please try again.');
+        console.error(err);
+      } finally {
+        if (printReady) restoreTheme(card);
+      }
+    }
+
+    document.getElementById('btnDownload').addEventListener('click', () => downloadCard(true));
+    document.getElementById('btnDownloadThemed').addEventListener('click', () => downloadCard(false));
+
+    // Init
+    displayDate.textContent = formatDate(dateInput.value);
+    applyTheme('liberty-red');
+  </script>
+</body>
+</html>
