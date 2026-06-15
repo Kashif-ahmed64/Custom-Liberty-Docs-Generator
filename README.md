@@ -11,6 +11,7 @@ Matches the official letterhead format:
 - **Blue facility lines** — plant name and location
 - **Date format** — `(dt: 17.06.2026)`
 - **White background** for print-friendly output
+- **Card size:** 75mm × 100mm (fits OLD ID lamination pouches)
 
 ## Features
 

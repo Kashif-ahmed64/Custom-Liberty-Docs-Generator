@@ -82,8 +82,8 @@
 
     /* ===== OFFICIAL PASS CARD ===== */
     .pass-card {
-      width: 90mm;
-      height: 140mm;
+      width: 75mm;
+      height: 100mm;
       background: #ffffff;
       border-radius: 3mm;
       overflow: hidden;
@@ -99,24 +99,11 @@
     .pass-card::before {
       content: '';
       position: absolute;
-      inset: 2.5mm;
-      border: 0.55mm solid var(--theme-border);
-      border-radius: 1.5mm;
+      inset: 2mm;
+      border: 0.45mm solid var(--theme-border);
+      border-radius: 1.2mm;
       pointer-events: none;
       z-index: 1;
-    }
-
-    .pass-hole {
-      position: absolute;
-      top: 2mm;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 5mm;
-      height: 5mm;
-      border-radius: 50%;
-      background: #e8e8ea;
-      border: 0.4mm solid rgba(0, 0, 0, 0.15);
-      z-index: 4;
     }
 
     .pass-zone {
@@ -129,23 +116,23 @@
 
     .pass-zone--header {
       background: var(--theme-header-bg);
-      padding: 6mm 5mm 3mm;
+      padding: 3.5mm 4mm 2mm;
       text-align: center;
-      gap: 1.8mm;
+      gap: 1.2mm;
       border-bottom: 0.3mm solid #dddddd;
     }
 
     .pass-zone--body {
       flex: 1;
       background: var(--theme-body-bg);
-      padding: 4mm 6mm;
-      gap: 3mm;
+      padding: 2.5mm 4mm;
+      gap: 2mm;
       justify-content: center;
     }
 
     .pass-zone--footer {
       background: var(--theme-footer-bg);
-      padding: 3mm 5mm 4mm;
+      padding: 2mm 4mm 2.5mm;
       text-align: center;
       gap: 1mm;
       border-top: 0.3mm solid #dddddd;
@@ -204,10 +191,10 @@
     }
 
     .card-field--tagbox {
-      border: 0.45mm solid var(--theme-border);
+      border: 0.4mm solid var(--theme-border);
       background: var(--theme-tag-bg);
-      border-radius: 2mm;
-      padding: 2.5mm 4mm;
+      border-radius: 1.5mm;
+      padding: 1.8mm 3mm;
       text-align: center;
     }
 
@@ -393,7 +380,7 @@
 
     /* ===== PRINT ===== */
     @media print {
-      @page { size: 90mm 140mm; margin: 0; }
+      @page { size: 75mm 100mm; margin: 0; }
 
       body {
         background: white !important;
@@ -425,7 +412,6 @@
       }
       .pass-zone--header { border-bottom: 0.3mm solid #999 !important; }
       .pass-zone--footer { border-top: 0.3mm solid #999 !important; }
-      .pass-hole { background: white !important; border-color: #18181b !important; }
       .card-field--logo img {
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
@@ -445,13 +431,12 @@
         <span class="preview-label">Live Preview</span>
         <div class="preview-wrap">
           <div class="pass-card" id="passCard">
-            <div class="pass-hole"></div>
             <div class="pass-zone pass-zone--header" id="zoneHeader"></div>
             <div class="pass-zone pass-zone--body" id="zoneBody"></div>
             <div class="pass-zone pass-zone--footer" id="zoneFooter"></div>
           </div>
         </div>
-        <p class="size-note">Official lanyard size: 90mm × 140mm (3.5″ × 5.5″)</p>
+        <p class="size-note">Lamination pouch size: 75mm × 100mm (OLD ID)</p>
       </section>
 
       <aside class="controls">
@@ -578,33 +563,33 @@
       return [
         {
           id: nextId(), type: 'logo', zone: 'header',
-          src: DEFAULT_LOGO, sizeMm: 16, align: 'center',
+          src: DEFAULT_LOGO, sizeMm: 11, align: 'center',
           shape: 'circle', bgColor: OFFICIAL.maroon
         },
         {
           id: nextId(), type: 'company-name', zone: 'header',
           before: 'LIBERTY ', highlight: 'DAHARKI', after: ' POWER LTD.',
-          fontSize: 3.4, align: 'center',
+          fontSize: 2.6, align: 'center',
           baseColor: OFFICIAL.black, highlightColor: OFFICIAL.red
         },
         {
           id: nextId(), type: 'text', zone: 'header',
           text: '235MW COMBINED CYCLE POWER PLANT',
           label: '', showLabel: false,
-          fontSize: 2.3, fontWeight: 700, align: 'center',
+          fontSize: 1.75, fontWeight: 700, align: 'center',
           color: 'official-blue', uppercase: true, letterSpacing: 0.02
         },
         {
           id: nextId(), type: 'text', zone: 'header',
           text: 'MIRPUR MATHELO, DISTRICT GHOTKI, SINDH, PAKISTAN',
           label: '', showLabel: false,
-          fontSize: 2.1, fontWeight: 700, align: 'center',
+          fontSize: 1.55, fontWeight: 700, align: 'center',
           color: 'official-blue', uppercase: true, letterSpacing: 0.02
         },
         {
           id: nextId(), type: 'tagbox', zone: 'body',
           lines: ['Invigilator', 'Trade Apprentice Test'],
-          fontSizes: [5, 3.2], fontWeights: [800, 700],
+          fontSizes: [3.8, 2.4], fontWeights: [800, 700],
           colors: ['theme-primary', 'dark'], uppercase: [true, true],
           letterSpacings: [0.1, 0.04]
         },
@@ -612,14 +597,14 @@
           id: nextId(), type: 'text', zone: 'body',
           text: 'Enter Name Here',
           label: 'Name', showLabel: true,
-          fontSize: 6, fontWeight: 800, align: 'center',
+          fontSize: 4.2, fontWeight: 800, align: 'center',
           color: 'dark', uppercase: false, letterSpacing: 0
         },
         {
           id: nextId(), type: 'text', zone: 'footer',
           text: '(dt: 17.06.2026)',
           label: '', showLabel: false,
-          fontSize: 3.8, fontWeight: 700, align: 'center',
+          fontSize: 2.8, fontWeight: 700, align: 'center',
           color: 'dark', uppercase: false, letterSpacing: 0
         }
       ];
@@ -1119,7 +1104,7 @@
     document.getElementById('btnAddLogo').addEventListener('click', () => {
       fields.push({
         id: nextId(), type: 'logo', zone: 'header',
-        src: DEFAULT_LOGO, sizeMm: 16, align: 'center',
+        src: DEFAULT_LOGO, sizeMm: 11, align: 'center',
         shape: 'circle', bgColor: OFFICIAL.maroon
       });
       renderAll();
