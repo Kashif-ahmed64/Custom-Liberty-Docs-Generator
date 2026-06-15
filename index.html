@@ -11,13 +11,19 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --theme-primary: #e60000;
-      --theme-primary-dark: #b80000;
-      --theme-text: #ffffff;
-      --theme-text-muted: rgba(255, 255, 255, 0.85);
-      --theme-body-bg: #f4f4f5;
-      --theme-tag-bg: rgba(255, 255, 255, 0.15);
-      --theme-border: rgba(255, 255, 255, 0.3);
+      --ldpl-maroon: #800000;
+      --ldpl-red: #cc0000;
+      --ldpl-blue: #0047ab;
+      --ldpl-black: #222222;
+      --theme-primary: #800000;
+      --theme-primary-dark: #600000;
+      --theme-text: #222222;
+      --theme-text-muted: #444444;
+      --theme-body-bg: #ffffff;
+      --theme-tag-bg: #f4f4f5;
+      --theme-border: #cccccc;
+      --theme-header-bg: #ffffff;
+      --theme-footer-bg: #ffffff;
     }
 
     body {
@@ -78,7 +84,7 @@
     .pass-card {
       width: 90mm;
       height: 140mm;
-      background: var(--theme-primary);
+      background: #ffffff;
       border-radius: 3mm;
       overflow: hidden;
       display: flex;
@@ -86,6 +92,8 @@
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
       position: relative;
       flex-shrink: 0;
+      border: 0.4mm solid #cccccc;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     .pass-card::before {
@@ -120,25 +128,27 @@
     }
 
     .pass-zone--header {
-      background: var(--theme-primary);
-      padding: 7mm 5mm 4mm;
+      background: var(--theme-header-bg);
+      padding: 6mm 5mm 3mm;
       text-align: center;
-      gap: 2.5mm;
+      gap: 1.8mm;
+      border-bottom: 0.3mm solid #dddddd;
     }
 
     .pass-zone--body {
       flex: 1;
       background: var(--theme-body-bg);
-      padding: 5mm 6mm;
-      gap: 3.5mm;
+      padding: 4mm 6mm;
+      gap: 3mm;
       justify-content: center;
     }
 
     .pass-zone--footer {
-      background: var(--theme-primary-dark);
-      padding: 3.5mm 5mm 4mm;
+      background: var(--theme-footer-bg);
+      padding: 3mm 5mm 4mm;
       text-align: center;
       gap: 1mm;
+      border-top: 0.3mm solid #dddddd;
     }
 
     .card-field { width: 100%; }
@@ -149,10 +159,33 @@
     }
 
     .card-field--logo img {
-      object-fit: contain;
+      object-fit: cover;
       display: block;
-      background: #e60000;
+      background: var(--ldpl-maroon);
+    }
+
+    .card-field--logo img.logo--circle {
+      border-radius: 50%;
+    }
+
+    .card-field--logo img.logo--square {
       border-radius: 1.5mm;
+    }
+
+    .card-field--company-name .company-line {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: 0.02em;
+    }
+
+    .card-field--company-name .company-before,
+    .card-field--company-name .company-after {
+      color: var(--ldpl-black);
+    }
+
+    .card-field--company-name .company-highlight {
+      color: var(--ldpl-red);
     }
 
     .card-field--text .field-label {
@@ -380,26 +413,23 @@
         page-break-inside: avoid;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
-        --theme-primary: #ffffff !important;
-        --theme-primary-dark: #ffffff !important;
-        --theme-text: #18181b !important;
-        --theme-text-muted: #52525b !important;
-        --theme-body-bg: #ffffff !important;
-        --theme-tag-bg: #f4f4f5 !important;
-        --theme-border: #18181b !important;
         background: #ffffff !important;
         border: 0.5mm solid #18181b !important;
       }
 
       .pass-card::before { border-color: #d4d4d8 !important; }
-      .pass-zone--header { background: #fff !important; border-bottom: 0.5mm solid #18181b !important; }
-      .pass-zone--footer { background: #fff !important; border-top: 0.5mm solid #18181b !important; }
+      .pass-zone--header,
+      .pass-zone--body,
+      .pass-zone--footer {
+        background: #fff !important;
+      }
+      .pass-zone--header { border-bottom: 0.3mm solid #999 !important; }
+      .pass-zone--footer { border-top: 0.3mm solid #999 !important; }
       .pass-hole { background: white !important; border-color: #18181b !important; }
-      .card-field--logo img { border: 0.3mm solid #d4d4d8; }
-
-      .pass-card .field-value,
-      .pass-card .field-label,
-      .pass-card .tag-line { color: #18181b !important; }
+      .card-field--logo img {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
     }
   </style>
 </head>
@@ -428,6 +458,7 @@
         <h2>Card Fields</h2>
         <div class="add-row">
           <button class="btn btn-outline btn-sm" id="btnAddText">+ Text Field</button>
+          <button class="btn btn-outline btn-sm" id="btnAddCompany">+ Company Name</button>
           <button class="btn btn-outline btn-sm" id="btnAddLogo">+ Logo Field</button>
           <button class="btn btn-outline btn-sm" id="btnAddTagBox">+ Tag Box</button>
           <button class="btn btn-outline btn-sm" id="btnReset">Reset Template</button>
@@ -442,7 +473,7 @@
           <button class="btn btn-secondary" id="btnDownload">Download PNG (Print Ready)</button>
           <button class="btn btn-outline" id="btnDownloadThemed">Download PNG (Themed)</button>
         </div>
-        <p class="hint">All fields update on the card as you type. Print uses white theme; logo stays visible.</p>
+        <p class="hint">Official LDPL letterhead colors are preserved on print (maroon logo, red DAHARKI, blue facility lines).</p>
       </aside>
     </div>
   </div>
@@ -450,73 +481,91 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script>
     const DEFAULT_LOGO = 'assets/liberty-logo.jpeg';
+    const OFFICIAL = {
+      maroon: '#800000',
+      red: '#cc0000',
+      blue: '#0047ab',
+      black: '#222222'
+    };
     let fieldIdCounter = 0;
-    let currentTheme = 'liberty-red';
+    let currentTheme = 'liberty-official';
 
     const themes = {
+      'liberty-official': {
+        '--theme-primary': '#800000',
+        '--theme-primary-dark': '#600000',
+        '--theme-text': '#222222',
+        '--theme-text-muted': '#444444',
+        '--theme-body-bg': '#ffffff',
+        '--theme-tag-bg': '#f4f4f5',
+        '--theme-border': '#cccccc',
+        '--theme-header-bg': '#ffffff',
+        '--theme-footer-bg': '#ffffff'
+      },
       'liberty-red': {
-        '--theme-primary': '#e60000',
-        '--theme-primary-dark': '#b80000',
-        '--theme-text': '#ffffff',
-        '--theme-text-muted': 'rgba(255,255,255,0.85)',
-        '--theme-body-bg': '#f4f4f5',
-        '--theme-tag-bg': 'rgba(255,255,255,0.15)',
-        '--theme-border': 'rgba(255,255,255,0.3)'
+        '--theme-primary': '#cc0000',
+        '--theme-primary-dark': '#990000',
+        '--theme-text': '#222222',
+        '--theme-text-muted': '#444444',
+        '--theme-body-bg': '#fff5f5',
+        '--theme-tag-bg': '#ffe4e4',
+        '--theme-border': '#cc0000',
+        '--theme-header-bg': '#ffffff',
+        '--theme-footer-bg': '#ffffff'
       },
       'deep-maroon': {
-        '--theme-primary': '#7f1d1d',
-        '--theme-primary-dark': '#5c1212',
-        '--theme-text': '#ffffff',
-        '--theme-text-muted': 'rgba(255,255,255,0.85)',
+        '--theme-primary': '#800000',
+        '--theme-primary-dark': '#600000',
+        '--theme-text': '#222222',
+        '--theme-text-muted': '#444444',
         '--theme-body-bg': '#fef2f2',
-        '--theme-tag-bg': 'rgba(255,255,255,0.12)',
-        '--theme-border': 'rgba(255,255,255,0.25)'
+        '--theme-tag-bg': '#fce8e8',
+        '--theme-border': '#800000',
+        '--theme-header-bg': '#ffffff',
+        '--theme-footer-bg': '#ffffff'
       },
       'navy': {
         '--theme-primary': '#1e3a5f',
         '--theme-primary-dark': '#152a45',
-        '--theme-text': '#ffffff',
-        '--theme-text-muted': 'rgba(255,255,255,0.85)',
+        '--theme-text': '#222222',
+        '--theme-text-muted': '#444444',
         '--theme-body-bg': '#f0f4f8',
-        '--theme-tag-bg': 'rgba(255,255,255,0.12)',
-        '--theme-border': 'rgba(255,255,255,0.25)'
+        '--theme-tag-bg': '#e8eef5',
+        '--theme-border': '#1e3a5f',
+        '--theme-header-bg': '#ffffff',
+        '--theme-footer-bg': '#ffffff'
       },
       'forest': {
         '--theme-primary': '#14532d',
         '--theme-primary-dark': '#0d3320',
-        '--theme-text': '#ffffff',
-        '--theme-text-muted': 'rgba(255,255,255,0.85)',
+        '--theme-text': '#222222',
+        '--theme-text-muted': '#444444',
         '--theme-body-bg': '#f0fdf4',
-        '--theme-tag-bg': 'rgba(255,255,255,0.12)',
-        '--theme-border': 'rgba(255,255,255,0.25)'
+        '--theme-tag-bg': '#dcfce7',
+        '--theme-border': '#14532d',
+        '--theme-header-bg': '#ffffff',
+        '--theme-footer-bg': '#ffffff'
       },
       'classic-black': {
         '--theme-primary': '#18181b',
         '--theme-primary-dark': '#09090b',
-        '--theme-text': '#ffffff',
-        '--theme-text-muted': 'rgba(255,255,255,0.8)',
+        '--theme-text': '#222222',
+        '--theme-text-muted': '#444444',
         '--theme-body-bg': '#f4f4f5',
-        '--theme-tag-bg': 'rgba(255,255,255,0.1)',
-        '--theme-border': 'rgba(255,255,255,0.2)'
-      },
-      'white-minimal': {
-        '--theme-primary': '#ffffff',
-        '--theme-primary-dark': '#f4f4f5',
-        '--theme-text': '#18181b',
-        '--theme-text-muted': '#52525b',
-        '--theme-body-bg': '#ffffff',
-        '--theme-tag-bg': '#f4f4f5',
-        '--theme-border': '#18181b'
+        '--theme-tag-bg': '#e4e4e7',
+        '--theme-border': '#18181b',
+        '--theme-header-bg': '#ffffff',
+        '--theme-footer-bg': '#ffffff'
       }
     };
 
     const themeLabels = {
-      'liberty-red': ['#e60000', 'Liberty Red'],
-      'deep-maroon': ['#7f1d1d', 'Deep Maroon'],
+      'liberty-official': ['#800000', 'Liberty Official'],
+      'liberty-red': ['#cc0000', 'Liberty Red'],
+      'deep-maroon': ['#800000', 'Deep Maroon'],
       'navy': ['#1e3a5f', 'Navy Blue'],
       'forest': ['#14532d', 'Forest Green'],
-      'classic-black': ['#18181b', 'Classic Black'],
-      'white-minimal': ['#ffffff', 'White Minimal']
+      'classic-black': ['#18181b', 'Classic Black']
     };
 
     function nextId() {
@@ -529,42 +578,49 @@
       return [
         {
           id: nextId(), type: 'logo', zone: 'header',
-          src: DEFAULT_LOGO, sizeMm: 24, align: 'center'
+          src: DEFAULT_LOGO, sizeMm: 16, align: 'center',
+          shape: 'circle', bgColor: OFFICIAL.maroon
+        },
+        {
+          id: nextId(), type: 'company-name', zone: 'header',
+          before: 'LIBERTY ', highlight: 'DAHARKI', after: ' POWER LTD.',
+          fontSize: 3.4, align: 'center',
+          baseColor: OFFICIAL.black, highlightColor: OFFICIAL.red
         },
         {
           id: nextId(), type: 'text', zone: 'header',
-          text: 'Liberty Daharki Powers Limited',
+          text: '235MW COMBINED CYCLE POWER PLANT',
           label: '', showLabel: false,
-          fontSize: 3.1, fontWeight: 700, align: 'center',
-          color: 'theme-text', uppercase: true, letterSpacing: 0.06
+          fontSize: 2.3, fontWeight: 700, align: 'center',
+          color: 'official-blue', uppercase: true, letterSpacing: 0.02
+        },
+        {
+          id: nextId(), type: 'text', zone: 'header',
+          text: 'MIRPUR MATHELO, DISTRICT GHOTKI, SINDH, PAKISTAN',
+          label: '', showLabel: false,
+          fontSize: 2.1, fontWeight: 700, align: 'center',
+          color: 'official-blue', uppercase: true, letterSpacing: 0.02
         },
         {
           id: nextId(), type: 'tagbox', zone: 'body',
           lines: ['Invigilator', 'Trade Apprentice Test'],
-          fontSizes: [5.2, 3.1], fontWeights: [800, 600],
+          fontSizes: [5, 3.2], fontWeights: [800, 700],
           colors: ['theme-primary', 'dark'], uppercase: [true, true],
-          letterSpacings: [0.12, 0.05]
+          letterSpacings: [0.1, 0.04]
         },
         {
           id: nextId(), type: 'text', zone: 'body',
           text: 'Enter Name Here',
           label: 'Name', showLabel: true,
-          fontSize: 6.2, fontWeight: 800, align: 'center',
+          fontSize: 6, fontWeight: 800, align: 'center',
           color: 'dark', uppercase: false, letterSpacing: 0
         },
         {
           id: nextId(), type: 'text', zone: 'footer',
-          text: 'Test Date',
+          text: '(dt: 17.06.2026)',
           label: '', showLabel: false,
-          fontSize: 2.5, fontWeight: 600, align: 'center',
-          color: 'theme-text-muted', uppercase: true, letterSpacing: 0.08
-        },
-        {
-          id: nextId(), type: 'text', zone: 'footer',
-          text: '17 June 2026',
-          label: '', showLabel: false,
-          fontSize: 4.6, fontWeight: 700, align: 'center',
-          color: 'theme-text', uppercase: false, letterSpacing: 0
+          fontSize: 3.8, fontWeight: 700, align: 'center',
+          color: 'dark', uppercase: false, letterSpacing: 0
         }
       ];
     }
@@ -582,16 +638,20 @@
         'theme-text': 'var(--theme-text)',
         'theme-primary': 'var(--theme-primary)',
         'theme-text-muted': 'var(--theme-text-muted)',
-        'dark': '#18181b',
+        'official-blue': OFFICIAL.blue,
+        'official-red': OFFICIAL.red,
+        'official-maroon': OFFICIAL.maroon,
+        'dark': OFFICIAL.black,
         'muted': '#71717a',
         'white': '#ffffff',
-        'custom': customColor || '#18181b'
+        'custom': customColor || OFFICIAL.black
       };
       return map[colorKey] || colorKey;
     }
 
     function textStyle(f) {
       return `
+        font-family: Arial, Helvetica, sans-serif;
         font-size:${f.fontSize}mm;
         font-weight:${f.fontWeight};
         text-align:${f.align};
@@ -604,9 +664,22 @@
     function renderCardField(f) {
       if (f.type === 'logo') {
         const justify = f.align === 'left' ? 'flex-start' : f.align === 'right' ? 'flex-end' : 'center';
+        const shapeClass = f.shape === 'square' ? 'logo--square' : 'logo--circle';
+        const bg = f.bgColor || OFFICIAL.maroon;
         return `
           <div class="card-field card-field--logo" data-id="${f.id}" style="justify-content:${justify}">
-            <img src="${f.src}" alt="Logo" style="width:${f.sizeMm}mm;height:${f.sizeMm}mm">
+            <img class="${shapeClass}" src="${f.src}" alt="Liberty Logo"
+              style="width:${f.sizeMm}mm;height:${f.sizeMm}mm;background:${bg}">
+          </div>`;
+      }
+
+      if (f.type === 'company-name') {
+        const align = f.align || 'center';
+        return `
+          <div class="card-field card-field--company-name" data-id="${f.id}">
+            <div class="company-line" style="font-size:${f.fontSize}mm;text-align:${align}">
+              <span class="company-before" style="color:${f.baseColor || OFFICIAL.black}">${escapeHtml(f.before)}</span><span class="company-highlight" style="color:${f.highlightColor || OFFICIAL.red}">${escapeHtml(f.highlight)}</span><span class="company-after" style="color:${f.baseColor || OFFICIAL.black}">${escapeHtml(f.after)}</span>
+            </div>
           </div>`;
       }
 
@@ -651,10 +724,13 @@
 
     function colorOptions(selected) {
       const opts = [
-        ['theme-text', 'Theme Text'],
+        ['official-blue', 'Official Blue'],
+        ['official-red', 'Official Red'],
+        ['official-maroon', 'Official Maroon'],
         ['theme-primary', 'Theme Primary'],
+        ['dark', 'Black'],
+        ['theme-text', 'Theme Text'],
         ['theme-text-muted', 'Theme Muted'],
-        ['dark', 'Dark'],
         ['muted', 'Gray'],
         ['white', 'White'],
         ['custom', 'Custom']
@@ -734,6 +810,51 @@
         </div>`;
     }
 
+    function renderCompanyEditor(f, index) {
+      return `
+        <div class="field-block" data-index="${index}">
+          <div class="field-block-header">
+            <span class="field-block-title">Company Name · ${f.zone}</span>
+            <div class="field-block-actions">
+              <button class="icon-btn" data-action="up">↑</button>
+              <button class="icon-btn" data-action="down">↓</button>
+              <button class="icon-btn danger" data-action="remove">✕</button>
+            </div>
+          </div>
+          <p class="hint" style="margin:0 0 8px">Official format: LIBERTY <span style="color:${OFFICIAL.red}">DAHARKI</span> POWER LTD.</p>
+          <label class="mini">Before highlight (e.g. "LIBERTY ")</label>
+          <input type="text" data-key="before" value="${escapeHtml(f.before)}">
+          <label class="mini">Highlighted word (e.g. "DAHARKI")</label>
+          <input type="text" data-key="highlight" value="${escapeHtml(f.highlight)}">
+          <label class="mini">After highlight (e.g. " POWER LTD.")</label>
+          <input type="text" data-key="after" value="${escapeHtml(f.after)}">
+          <div class="row row-3">
+            <div>
+              <label class="mini">Size (mm)</label>
+              <input type="number" data-key="fontSize" min="2" max="8" step="0.1" value="${f.fontSize}">
+            </div>
+            <div>
+              <label class="mini">Align</label>
+              <select data-key="align">${alignOptions(f.align)}</select>
+            </div>
+            <div>
+              <label class="mini">Zone</label>
+              <select data-key="zone">${zoneOptions(f.zone)}</select>
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label class="mini">Base color (LIBERTY / POWER LTD.)</label>
+              <input type="color" data-key="baseColor" value="${f.baseColor || OFFICIAL.black}">
+            </div>
+            <div>
+              <label class="mini">Highlight color (DAHARKI)</label>
+              <input type="color" data-key="highlightColor" value="${f.highlightColor || OFFICIAL.red}">
+            </div>
+          </div>
+        </div>`;
+    }
+
     function renderLogoEditor(f, index) {
       return `
         <div class="field-block" data-index="${index}">
@@ -755,8 +876,21 @@
               <select data-key="align">${alignOptions(f.align)}</select>
             </div>
           </div>
-          <label class="mini">Size (mm)</label>
-          <input type="number" data-key="sizeMm" min="10" max="35" step="1" value="${f.sizeMm}">
+          <div class="row">
+            <div>
+              <label class="mini">Size (mm)</label>
+              <input type="number" data-key="sizeMm" min="10" max="35" step="1" value="${f.sizeMm}">
+            </div>
+            <div>
+              <label class="mini">Shape</label>
+              <select data-key="shape">
+                <option value="circle" ${f.shape !== 'square' ? 'selected' : ''}>Circle (Official)</option>
+                <option value="square" ${f.shape === 'square' ? 'selected' : ''}>Square</option>
+              </select>
+            </div>
+          </div>
+          <label class="mini">Logo background (maroon)</label>
+          <input type="color" data-key="bgColor" value="${f.bgColor || OFFICIAL.maroon}">
           <label class="mini">Upload logo image</label>
           <input type="file" accept="image/*" data-key="logoFile">
           <img class="logo-preview" src="${f.src}" alt="Logo preview">
@@ -814,6 +948,7 @@
     function renderEditors() {
       fieldsEditor.innerHTML = fields.map((f, i) => {
         if (f.type === 'logo') return renderLogoEditor(f, i);
+        if (f.type === 'company-name') return renderCompanyEditor(f, i);
         if (f.type === 'tagbox') return renderTagBoxEditor(f, i);
         return renderTextEditor(f, i);
       }).join('');
@@ -822,7 +957,7 @@
     function renderThemeButtons() {
       document.getElementById('themeGrid').innerHTML = Object.entries(themeLabels).map(([id, [color, label]]) => `
         <button class="theme-btn ${currentTheme === id ? 'active' : ''}" data-theme="${id}">
-          <span class="theme-swatch" style="background:${color}${id === 'white-minimal' ? ';border:1px solid #ccc' : ''}"></span>
+          <span class="theme-swatch" style="background:${color}"></span>
           ${label}
         </button>
       `).join('');
@@ -859,6 +994,13 @@
       const key = e.target.dataset.key;
 
       if (key === 'text') { f.text = e.target.value; renderCard(); return; }
+      if (key === 'before') { f.before = e.target.value; renderCard(); return; }
+      if (key === 'highlight') { f.highlight = e.target.value; renderCard(); return; }
+      if (key === 'after') { f.after = e.target.value; renderCard(); return; }
+      if (key === 'baseColor') { f.baseColor = e.target.value; renderCard(); return; }
+      if (key === 'highlightColor') { f.highlightColor = e.target.value; renderCard(); return; }
+      if (key === 'bgColor') { f.bgColor = e.target.value; renderCard(); return; }
+      if (key === 'shape') { f.shape = e.target.value; renderCard(); return; }
       if (key === 'label') { f.label = e.target.value; renderCard(); return; }
       if (key === 'zone') { f.zone = e.target.value; renderEditors(); renderCard(); return; }
       if (key === 'align') { f.align = e.target.value; renderCard(); return; }
@@ -964,10 +1106,21 @@
       renderAll();
     });
 
+    document.getElementById('btnAddCompany').addEventListener('click', () => {
+      fields.push({
+        id: nextId(), type: 'company-name', zone: 'header',
+        before: 'LIBERTY ', highlight: 'DAHARKI', after: ' POWER LTD.',
+        fontSize: 3.4, align: 'center',
+        baseColor: OFFICIAL.black, highlightColor: OFFICIAL.red
+      });
+      renderAll();
+    });
+
     document.getElementById('btnAddLogo').addEventListener('click', () => {
       fields.push({
         id: nextId(), type: 'logo', zone: 'header',
-        src: DEFAULT_LOGO, sizeMm: 20, align: 'center'
+        src: DEFAULT_LOGO, sizeMm: 16, align: 'center',
+        shape: 'circle', bgColor: OFFICIAL.maroon
       });
       renderAll();
     });
@@ -996,22 +1149,17 @@
     });
 
     const printThemeVars = {
-      '--theme-primary': '#ffffff',
-      '--theme-primary-dark': '#ffffff',
-      '--theme-text': '#18181b',
-      '--theme-text-muted': '#52525b',
       '--theme-body-bg': '#ffffff',
       '--theme-tag-bg': '#f4f4f5',
-      '--theme-border': '#18181b'
+      '--theme-border': '#999999',
+      '--theme-header-bg': '#ffffff',
+      '--theme-footer-bg': '#ffffff'
     };
 
     function applyPrintTheme() {
       Object.entries(printThemeVars).forEach(([k, v]) => passCard.style.setProperty(k, v));
       passCard.style.background = '#ffffff';
       passCard.style.border = '2px solid #18181b';
-      passCard.querySelectorAll('.field-value, .field-label, .tag-line').forEach(el => {
-        el.style.color = '#18181b';
-      });
     }
 
     function restoreTheme() {
@@ -1055,7 +1203,7 @@
     document.getElementById('btnDownloadThemed').addEventListener('click', () => downloadCard(false));
 
     renderThemeButtons();
-    applyTheme('liberty-red');
+    applyTheme('liberty-official');
     renderAll();
   </script>
 </body>
